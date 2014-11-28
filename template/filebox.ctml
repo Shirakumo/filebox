@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Filebox</title>
+    <link rel="stylesheet" type="text/css" href="../static/filebox.css" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Simple file storage." />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <header>
+      <h1>Filebox</h1>
+      <div id="info">
+        <span>0</span> files uploaded<br />
+        <span>0</span> Mb space used<br />
+        <span>0</span> Mb space available
+      </div>
+      <div id="notice">
+        Uploaded to <a href="#">/file/bla/dicks.png</a>
+      </div>
+    </header>
+    <main>
+      <form id="upload" action="/api/filebox/upload" method="post">
+        <input type="file" class="file" name="file" required />
+        <input type="name" class="name" name="name" placeholder="New name" />
+        <span class="public"><input type="checkbox" name="public" value="true" />Public</span>
+        <input type="submit" class="submit" value="Upload" />
+      </form>
+      <table id="files">
+        <thead>
+          <tr><th>Filename</th><th>Upload Date</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody iterate="files">
+          <tr>
+            <td><a href="#">FILENAME</a></td>
+            <td>9999.99.99</td>
+            <td>Public</td>
+            <td><form action="/api/filebox/delete" method="post">
+              <input type="hidden" name="file" />
+              <input type="submit" value="Delete" />
+            </form></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <footer>
+      <footer>
+        Running TyNETv5 <a href="https://github.com/Shirakumo/radiance">Radiance</a>, <a href="https://github.com/Shirakumo/filebox">Filebox</a>.
+      </footer>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,178 @@
+(:let ((base "#0088EE")
+       (high "#77CCFF"))
+
+  ((:or html body)
+   :font-family Arial sans-serif
+   :font-size 12pt
+   :margin 0
+   :padding 0
+   :background black
+
+   (input
+    :border 1px solid black
+    :background (hex 333)
+    :color white)
+   ((:and input [type=submit])
+    :cursor pointer)
+   ((:and input [type=submit] :hover)
+    :background #(base)))
+
+  (header
+   :display flex
+   :background (hex 151515)
+   :color white
+   :padding 5px 20px 5px 20px
+   :border-bottom 3px solid #(base)
+   (* :vertical-align middle
+      :display inline-block)
+   
+   (h1
+    :margin 0
+    :padding 0
+    :display inline-block
+    :width 150px)
+
+   ("#info"
+    :display inline-block
+    :font-size 8pt
+    :width 150px
+    (span :color #(high)
+          :display inline-block
+          :min-width 50px
+          :text-align right))
+
+   ("#notice"
+    :flex-grow 1
+    :text-align center
+    :padding 10px 320px 10px 20px
+    :font-weight bold
+    :font-size 14pt
+    (a :color #(high))
+    ((:and a :hover) :color #(base))))
+
+  (main
+   :margin 0 auto 0 auto
+   :max-width 1000px
+   :background (hex EEE)
+   :border 1px solid #(base)
+   :border-top none
+   :border-bottom none
+   :padding-top 10px
+
+   ("#upload"
+    :position relative
+    :margin 0 -20px 10px -20px
+    :background (hex 333)
+    :padding 3px 30px 3px 30px
+    :color white
+    (input
+     :background (hex 151515))
+    ((:and input [type=submit] :hover)
+     :background #(base)))
+
+   ((:and "#upload" :before)
+    :content "''"
+    :position absolute
+    :left 0
+    :bottom -10px
+    :width 0
+    :height 0
+    :border-style solid
+    :border-width 0 19px 10px 0
+    :border-color transparent (hex 151515) transparent transparent)
+
+   ((:and "#upload" :after)
+    :content "''"
+    :position absolute
+    :right 0
+    :bottom -10px
+    :width 0
+    :height 0
+    :border-style solid
+    :border-width 0 0 10px 19px
+    :border-color transparent transparent transparent (hex 151515))
+
+   ("#files"
+    :width 100%
+    :border-collapse collapse
+
+    ((:and (:or td th) (:nth-child (:or 2 3 4)))
+     :width 120px
+     :text-align right)
+
+    ((:and tr (:nth-child 2n))
+     :background (rgba 0 0 0 0.1))
+
+    (thead
+     (th :text-align left
+         :padding 2px 20px 2px 20px)
+     :background #(base)
+     :color white)
+
+    (tbody
+     ((:and td (:nth-child 1))
+      :padding 3px
+      (a :color black
+         :text-decoration none))
+     ((:and td (:nth-child 2)) :font-family monospace)
+     ((:and td (:nth-child 3)))
+     ((:and td (:nth-child 4))
+      :text-align right)
+
+     ((:and tr :hover)
+      :background #(high)))))
+
+  (footer
+   :margin-top 20px
+   :color (hex 333)
+   :font-size 8pt
+   :text-align center
+   (a
+    :color "#555"
+    :text-decoration none)
+   
+   ((:and a :hover)
+    :color #(base)))
+
+  (:media "(max-width:1040px)"
+          (header
+           ("#notice"
+            :padding 10px))
+          
+          (main
+           :padding 0
+           :border none
+           
+           ("#upload" :margin 0)
+           ((:and "#upload" (:or :after :before)) :display none)
+
+           ("#files"
+            ((:and (:or td th) (:nth-child (:or 2 3 4)))
+             :width 100px))))
+
+  (:media "(max-width:700px)"
+          (header
+           ("#info"
+            :display none)))
+
+  (:media "(max-width:600px)"
+          (header
+           :padding 5px
+           :display block
+           :text-align center
+           ((:or h1 "#notice")
+            :width auto
+            :margin 0
+            :padding 0
+            :display block
+            :text-align center))
+          
+          (main
+           ("#upload"
+            :padding 5px
+            ((:or .public .name)
+             :display none))
+           
+           ("#files"
+            ((:and (:or td th) (:nth-child (:or 2 3)))
+             :display none)))))
