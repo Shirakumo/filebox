@@ -31,7 +31,7 @@
                              (uiop/run-program::escape-shell-token
                               (uiop:native-namestring pathname))) :output :string))
   #-:unix
-  :unknown)
+  0)
 
 (defun directory-free (pathname)
   #+:unix
@@ -40,7 +40,7 @@
                              (uiop/run-program::escape-shell-token
                               (uiop:native-namestring pathname))) :output :string))
   #-:unix
-  :unknown)
+  0)
 
 (defun hash-password (pass)
   (cryptos:pbkdf2-hash pass (uc:config-tree :filebox :key)))
