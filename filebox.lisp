@@ -45,9 +45,17 @@
     (make-pathname :name (princ-to-string (dm:id file))
                    :type (mimes:mime-file-type (dm:field file "type")))))
 
+(defun file-directory (file)
+  (let ((file (ensure-file file)))
+    (ensure-directories-exist
+     (asdf:system-relative-pathname
+      :filebox (format NIL "uploads/~a/" (dm:field file "author"))))))
+
 (defun file-pathname (file)
-  (asdf:system-relative-pathname
-   :filebox (merge-pathnames "uploads/" (file-filename file))))
+  (let ((file (ensure-file file)))
+    (merge-pathnames
+     (file-directory file)
+     (file-filename file))))
 
 (defun file-accessible-p (file)
   (or (and (auth:current)
