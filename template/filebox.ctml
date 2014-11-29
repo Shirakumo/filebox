@@ -25,14 +25,14 @@
         <input type="hidden" name="browser" value="true" />
         <input type="file" class="file" name="file" tabindex="2" required
                title="For better or worse, you will have to pick a file if you want to upload something." />
-        <input type="password" class="password" name="password" placeholder="Password" tabindex="-1"
+        <input type="password" class="password" name="password" placeholder="Password" tabindex="-1" autocomplete="off"
                title="You can specify a password here. Only you or people with the password will be able to view it." />
         <time title="Don't worry, the correct upload time will be saved once you submit the file."></time>
         <div class="action">
           <input type="submit" value="Upload" tabindex="4"
                  title="Your upload is only a click away now." />
         </div>
-        <input type="text" class="attrs" name="attrs" placeholder="attributes and key:value-pairs" tabindex="3"
+        <input type="text" class="attrs" name="attrs" placeholder="attributes and key:value-pairs" tabindex="3" autocomplete="off"
                title="Write down attributes that describe your file here.
 Attributes are space separated. A colon separates key and value.
 You can make your files private by using the 'private' attribute." />
