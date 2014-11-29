@@ -50,7 +50,6 @@
    :filebox (merge-pathnames "uploads/" (file-filename file))))
 
 (defun file-accessible-p (file)
-  (v:info :test "~s" (dm:field file "hash"))
   (or (and (auth:current)
            (string-equal (user:username (auth:current))
                          (dm:field file "author")))
