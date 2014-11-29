@@ -9,4 +9,7 @@ This file is a part of TyNETv5/Radiance
   :defsystem-depends-on (:radiance)
   :class "radiance:module"
   :components ((:file "filebox"))
-  :depends-on ((:interface :auth)))
+  :depends-on ((:interface :auth)
+               (:interface :data-model)
+               :r-clip
+               :trivial-mimes))

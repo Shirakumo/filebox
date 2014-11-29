@@ -1,5 +1,6 @@
 (:let ((base "#0088EE")
-       (high "#77CCFF"))
+       (high "#77CCFF")
+       (low "#003366"))
 
   ((:or html body)
    :font-family Arial sans-serif
@@ -8,14 +9,14 @@
    :padding 0
    :background black
 
-   (input
-    :border 1px solid black
-    :background (hex 333)
-    :color white)
-   ((:and input [type=submit])
-    :cursor pointer)
-   ((:and input [type=submit] :hover)
-    :background #(base)))
+   ((:or input a)
+    :border 1px solid transparent !important
+    :transition all 0.3s ease-in-out
+    :outline none)
+   
+   ((:and (:or a input) :focus)
+    :box-shadow 0 0 5px #(base)
+    :border 1px solid #(base) !important))
 
   (header
    :display flex
@@ -53,74 +54,111 @@
   (main
    :margin 0 auto 0 auto
    :max-width 1000px
-   :background (hex EEE)
-   :border 1px solid #(base)
-   :border-top none
-   :border-bottom none
-   :padding-top 10px
 
-   ("#upload"
-    :position relative
-    :margin 0 -20px 10px -20px
-    :background (hex 333)
-    :padding 3px 30px 3px 30px
-    :color white
+   ((:or "#upload" ("#files" li))
+    :display flex
+    :flex-wrap wrap
+    :align-items stretch
+    :background (hex 151515)
+    ((:or .type time .action)
+     :flex-grow 1
+     :max-width 150px
+     :min-width 150px
+     :margin-left 10px
+     :text-align right)
+    (.file
+     :flex-shrink 1
+     :white-space nowrap
+     :overflow hidden
+     :text-overflow ellipsis)
+    (.action
+     :display flex
+     :justify-content flex-end
+     :align-items stretch
+     :max-width 100px
+     :min-width 100px)
     (input
-     :background (hex 151515))
+     :background #(low)
+     :color white
+     :border none)
     ((:and input [type=submit] :hover)
-     :background #(base)))
+     :background #(base)
+     :cursor pointer)
+    (*
+     :margin 1px
+     :flex-grow 1
+     :color white
+     :display inline-block
+     :border 1px solid transparent))
 
-   ((:and "#upload" :before)
-    :content "''"
-    :position absolute
-    :left 0
-    :bottom -10px
-    :width 0
-    :height 0
-    :border-style solid
-    :border-width 0 19px 10px 0
-    :border-color transparent (hex 151515) transparent transparent)
+   (.attrs
+    :flex-grow 1
+    :flex-basis 100%
+    :box-sizing border-box)
+   
+   ("#upload"
+    (input 
+     :padding 2px)
+    (.file
+     :background transparent)
+    (.password
+     :background transparent)
+    (.attrs
+     :background (hex 333)))
 
-   ((:and "#upload" :after)
-    :content "''"
-    :position absolute
-    :right 0
-    :bottom -10px
-    :width 0
-    :height 0
-    :border-style solid
-    :border-width 0 0 10px 19px
-    :border-color transparent transparent transparent (hex 151515))
+   ("#filter"
+    :box-sizing border-box
+    :width 100%
+    :border 1px solid #(base)
+    :margin 20px 0 5px 0
+    :padding 2px
+    :background (hex 333)
+    :color white)
 
    ("#files"
-    :width 100%
-    :border-collapse collapse
-
-    ((:and (:or td th) (:nth-child (:or 2 3 4)))
-     :width 120px
-     :text-align right)
-
-    ((:and tr (:nth-child 2n))
-     :background (rgba 0 0 0 0.1))
-
-    (thead
-     (th :text-align left
-         :padding 2px 20px 2px 20px)
-     :background #(base)
-     :color white)
-
-    (tbody
-     ((:and td (:nth-child 1))
-      :padding 3px
-      (a :color black
-         :text-decoration none))
-     ((:and td (:nth-child 2)) :font-family monospace)
-     ((:and td (:nth-child 3)))
-     ((:and td (:nth-child 4))
-      :text-align right)
-
-     ((:and tr :hover)
-      :background #(high)))))
+    :list-style none
+    :margin 0 :padding 0
+    (li
+     :position relative
+     :border 1px solid black)
+    (.file
+     :padding-left 5px)
+    (.attrs
+     :transition opacity 0.3s ease-in-out
+     :opacity 0
+     :display block
+     :position absolute
+     :bottom -40px
+     :left 10px
+     :min-width 40px
+     :height 30px
+     :padding 5px
+     :background black
+     :border 1px solid #(base)
+     :border-radius 5px
+     :box-shadow 0 0 10px black
+     :z-index 100
+     :pointer-events none)
+    ((:and li :hover)
+     :border-color #(base)
+     :box-shadow 0 0 5px #(base)
+     (.attrs
+      :opacity 1))
+    ((:and .attrs (:or :after :before))
+     :content "''"
+     :width 0
+     :height 0
+     :position absolute
+     :top -10px
+     :left 20px
+     :border-style solid)
+    ((:and .attrs (:or :before))
+     :border-width 0 5px 10px 5px
+     :border-color transparent transparent #(base) transparent)
+    ((:and .attrs (:or :after))
+     :margin 2px 0 0 1px
+     :border-width 0 4px 8px 4px
+     :border-color transparent transparent black transparent)))
 
   (footer
    :margin-top 20px
@@ -134,28 +172,16 @@
    ((:and a :hover)
     :color #(base)))
 
-  (:media "(max-width:1040px)"
+  (:media "(max-width:1000px)"
           (header
            ("#notice"
-            :padding 10px))
-          
-          (main
-           :padding 0
-           :border none
-           
-           ("#upload" :margin 0)
-           ((:and "#upload" (:or :after :before)) :display none)
-
-           ("#files"
-            ((:and (:or td th) (:nth-child (:or 2 3 4)))
-             :width 100px))))
+            :padding 10px)))
 
   (:media "(max-width:700px)"
           (header
            ("#info"
-            :display none)))
+            :display none))
 
-  (:media "(max-width:600px)"
           (header
            :padding 5px
            :display block
@@ -168,11 +194,5 @@
             :text-align center))
           
           (main
-           ("#upload"
-            :padding 5px
-            ((:or .public .name)
-             :display none))
-           
-           ("#files"
-            ((:and (:or td th) (:nth-child (:or 2 3)))
-             :display none)))))
+           ((:or time .password .type)
+            :display none !important))))

@@ -3,8 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>Filebox</title>
-    <link rel="stylesheet" type="text/css" href="../static/filebox.css" />
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/filebox/filebox.css" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content="Simple file storage." />
     <meta name="robots" content="noindex, nofollow" />
@@ -13,42 +12,50 @@
     <header>
       <h1>Filebox</h1>
       <div id="info">
-        <span>0</span> files uploaded<br />
-        <span>0</span> Mb space used<br />
-        <span>0</span> Mb space available
+        <span lquery="(text (length files))">0</span> files uploaded<br />
+        <span lquery="(text occupied)">0</span> Mb space occupied<br />
+        <span lquery="(text available)">0</span> Mb space available
       </div>
-      <div id="notice">
-        Uploaded to <a href="#">/file/bla/dicks.png</a>
-      </div>
+      <c:when test="notice">
+        <div id="notice" lquery="(html notice)"></div>
+      </c:when>
     </header>
-    <main>
-      <form id="upload" action="/api/filebox/upload" method="post">
-        <input type="file" class="file" name="file" required />
-        <input type="name" class="name" name="name" placeholder="New name" />
-        <span class="public"><input type="checkbox" name="public" value="true" />Public</span>
-        <input type="submit" class="submit" value="Upload" />
+    <main>      
+      <form id="upload" action="/api/filebox/upload" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="browser" value="true" />
+        <input type="file" class="file" name="file" tabindex="2" required />
+        <input type="password" class="password" name="password" placeholder="Password" tabindex="-1" />
+        <time></time>
+        <div class="action">
+          <input type="submit" value="Upload" tabindex="4" />
+        </div>
+        <input type="text" class="attrs" name="attrs" placeholder="view:public dir:something some-other:attribute" tabindex="3" />
       </form>
-      <table id="files">
-        <thead>
-          <tr><th>Filename</th><th>Upload Date</th><th>Status</th><th>Actions</th></tr>
-        </thead>
-        <tbody iterate="files">
-          <tr>
-            <td><a href="#">FILENAME</a></td>
-            <td>9999.99.99</td>
-            <td>Public</td>
-            <td><form action="/api/filebox/delete" method="post">
-              <input type="hidden" name="file" />
-              <input type="submit" value="Delete" />
-            </form></td>
-          </tr>
-        </tbody>
-      </table>
+      
+      <input type="text" id="filter" placeholder="Filter..." tabindex="1" autofocus />
+      
+      <ul id="files" iterate="files">
+        <li>
+          <a class="file" href="#" lquery="(text name) (attr :href (filebox::file-link *))">FILENAME</a>
+          <span class="type" lquery="(text type)">image/png</span>
+          <time pubdate datetime="2014.11.29T99:99:99" title="Something Readable" lquery="(format-time time)">2014.11.29 13:30:00</time>
+          <form class="action" action="/api/filebox/delete" method="post">
+            <input type="hidden" name="browser" value="true" />
+            <input type="hidden" name="file" lquery="(val (filebox::to-secure-id _id))" />
+            <input type="submit" value="Delete" tabindex="-1" />
+          </form>
+          <div class="attrs" lquery="(text attrs)">ATTRIBUTES:AND SOME:SUCH</div>
+        </li>
+      </ul>
     </main>
     <footer>
       <footer>
-        Running TyNETv5 <a href="https://github.com/Shirakumo/radiance">Radiance</a>, <a href="https://github.com/Shirakumo/filebox">Filebox</a>.
+        Running TyNETv5
+        <a href="https://github.com/Shirakumo/radiance" tabindex="-1">Radiance</a>,
+        <a href="https://github.com/Shirakumo/filebox" tabindex="-1">Filebox</a>.
       </footer>
     </footer>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="/static/filebox/filebox.js"></script>
   </body>
 </html>
