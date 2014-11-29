@@ -10,8 +10,8 @@
   </head>
   <body>
     <header>
-      <h1>Filebox</h1>
-      <div id="info">
+      <h1 title="Now running on CL!">Filebox</h1>
+      <div id="info" title="Nifty statistics of your filebox.">
         <span lquery="(text (length files))">0</span> files uploaded<br />
         <span lquery="(text occupied)">0</span> Mb space occupied<br />
         <span lquery="(text available)">0</span> Mb space available
@@ -23,16 +23,26 @@
     <main>      
       <form id="upload" action="/api/filebox/upload" method="post" enctype="multipart/form-data">
         <input type="hidden" name="browser" value="true" />
-        <input type="file" class="file" name="file" tabindex="2" required />
-        <input type="password" class="password" name="password" placeholder="Password" tabindex="-1" />
-        <time></time>
+        <input type="file" class="file" name="file" tabindex="2" required
+               title="For better or worse, you will have to pick a file if you want to upload something." />
+        <input type="password" class="password" name="password" placeholder="Password" tabindex="-1"
+               title="You can specify a password here. Only you or people with the password will be able to view it." />
+        <time title="Don't worry, the correct upload time will be saved once you submit the file."></time>
         <div class="action">
-          <input type="submit" value="Upload" tabindex="4" />
+          <input type="submit" value="Upload" tabindex="4"
+                 title="Your upload is only a click away now." />
         </div>
-        <input type="text" class="attrs" name="attrs" placeholder="view:public dir:something some-other:attribute" tabindex="3" />
+        <input type="text" class="attrs" name="attrs" placeholder="attributes and key:value-pairs" tabindex="3"
+               title="Write down attributes that describe your file here.
+Attributes are space separated. A colon separates key and value.
+You can make your files private by using the 'private' attribute." />
       </form>
       
-      <input type="text" id="filter" placeholder="Filter..." tabindex="1" autofocus />
+      <input type="text" id="filter" placeholder="Filter..." tabindex="1" autofocus
+             title="With this you can filter the file list for what you need.
+Searched are the file-name, -type, and -date as well as the attributes.
+You can search more specifically by using attribute keys like so:
+time:2014 type:png my-attribute-key:value" />
       
       <ul id="files" iterate="files">
         <li>
@@ -42,7 +52,8 @@
           <form class="action" action="/api/filebox/delete" method="post">
             <input type="hidden" name="browser" value="true" />
             <input type="hidden" name="file" lquery="(val (filebox::to-secure-id _id))" />
-            <input type="submit" value="Delete" tabindex="-1" />
+            <input type="submit" value="Delete" tabindex="-1"
+                   title="This will delete the file forever and after. No turning back." />
           </form>
           <div class="attrs" lquery="(text attrs)">ATTRIBUTES:AND SOME:SUCH</div>
         </li>
@@ -51,8 +62,10 @@
     <footer>
       <footer>
         Running TyNETv5
-        <a href="https://github.com/Shirakumo/radiance" tabindex="-1">Radiance</a>,
-        <a href="https://github.com/Shirakumo/filebox" tabindex="-1">Filebox</a>.
+        <a href="https://github.com/Shirakumo/radiance" tabindex="-1"
+           title="Radiance is a web-framework written in Common Lisp.">Radiance</a>,
+        <a href="https://github.com/Shirakumo/filebox" tabindex="-1"
+           title="A tiny application written on top of radiance to bring you simple file uploading.">Filebox</a>.
       </footer>
     </footer>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
