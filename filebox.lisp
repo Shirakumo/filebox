@@ -24,6 +24,24 @@
                               (time (:integer 5))
                               (author (:varchar 32)))))
 
+(defun directory-size (pathname)
+  #+:unix
+  (parse-integer
+   (uiop:run-program (format NIL "du -s ~a | awk '{print $1}'"
+                             (uiop/run-program::escape-shell-token
+                              (uiop:native-namestring pathname))) :output :string))
+  #-:unix
+  :unknown)
+
+(defun directory-free (pathname)
+  #+:unix
+  (parse-integer
+   (uiop:run-program (format NIL "df -Pk ~a | tail -1 | awk '{print $4}'"
+                             (uiop/run-program::escape-shell-token
+                              (uiop:native-namestring pathname))) :output :string))
+  #-:unix
+  :unknown)
+
 (defun hash-password (pass)
   (cryptos:pbkdf2-hash pass (uc:config-tree :filebox :key)))
 
@@ -45,11 +63,13 @@
     (make-pathname :name (princ-to-string (dm:id file))
                    :type (mimes:mime-file-type (dm:field file "type")))))
 
+(defun user-directory (user)
+  (ensure-directories-exist
+   (asdf:system-relative-pathname
+    :filebox (format NIL "uploads/~a/" user))))
+
 (defun file-directory (file)
-  (let ((file (ensure-file file)))
-    (ensure-directories-exist
-     (asdf:system-relative-pathname
-      :filebox (format NIL "uploads/~a/" (dm:field file "author"))))))
+  (user-directory (dm:field (ensure-file file) "author")))
 
 (defun file-pathname (file)
   (let ((file (ensure-file file)))
@@ -82,12 +102,15 @@
       (error 'request-not-found :message (princ-to-string err)))))
 
 (define-page index #@"filebox/^$" (:access (perm filebox upload) :lquery (template "filebox.ctml"))
-  (let ((files (dm:get 'filebox-files (db:query (:= 'author (user:username (auth:current)))) :sort '((time :DESC) (name :ASC)))))
-    (r-clip:process
-     T
-     :notice (cond ((get-var "upload") (format NIL "File <a href='/file/~a' tabindex='-1'>uploaded</a>." (get-var "upload")))
-                   ((get-var "notice") (format NIL "Notice: ~a" (get-var "notice"))))
-     :files files)))
+  (let ((username (user:username (auth:current))))
+    (let ((files (dm:get 'filebox-files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)))))
+      (r-clip:process
+       T
+       :notice (cond ((get-var "upload") (format NIL "File <a href='/file/~a' tabindex='-1'>uploaded</a>." (get-var "upload")))
+                     ((get-var "notice") (format NIL "Notice: ~a" (get-var "notice"))))
+       :files files
+       :available (format NIL "~,,'':d" (floor (/ (directory-free (user-directory username)) 1024)))
+       :occupied (format NIL "~,,'':d" (floor (/ (directory-size (user-directory username)) 1024)))))))
 
 (define-api filebox/upload (file &optional attrs name password) (:access (perm filebox upload))
   (let ((name (or* name (second file)))
