@@ -150,7 +150,8 @@ $(function(){
                 });
         });
         // Publish list
-        $(list).attr("class","interactive-attrs")
+        $(list).attr({"class":"interactive-attrs",
+                      "title":"This is a list of attributes generated from what you already used. Click on one to add/remove it to/from the attribute input field."})
             .appendTo("#upload");
     }
 
