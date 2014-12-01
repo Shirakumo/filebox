@@ -86,6 +86,32 @@ $(function(){
         });
     }
 
+    function maybeMakeClickable(item){
+        var type = $(".type",item).text();
+        var file = $(".file",item).attr("href");
+        var prev = $(".preview",item);
+        if(type == "image/png" ||
+           type == "image/gif" ||
+           type == "image/bmp" ||
+           type == "image/jpg" ||
+           type == "image/jpeg" ||
+           type == "image/svg+xml"){
+            $(item).click(function(){
+                if(prev.css("display") === "none"){
+                    if($("img",prev).length == 0){
+                        var img = document.createElement("img");
+                        $(img).attr({"src":file,
+                                     "alt":"preview"})
+                            .appendTo($("a",prev));
+                    }
+                    $(prev).css("display", "block");
+                }else{
+                    $(prev).css("display", "none");
+                }
+            });
+        }
+    }
+
     // allow filtering
     setupFilterableList($("#files"), $("#filter"));
 
@@ -97,5 +123,10 @@ $(function(){
         if($(this).text().trim()===""){
             $(this).remove();
         }
+    });
+
+    // previews
+    $("#files li").each(function(){
+        maybeMakeClickable(this);
     });
 });

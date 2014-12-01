@@ -45,8 +45,8 @@ You can search more specifically by using attribute keys like so:
 time:2014 type:png my-attribute-key:value" />
       
       <ul id="files" iterate="files">
-        <li>
-          <a class="file" href="#" lquery="(text name) (attr :href (filebox::file-link *))">FILENAME</a>
+        <li title="Click me to get an inline preview of images.">
+          <span><a class="file" href="#" lquery="(text name) (attr :href (filebox::file-link *))">FILENAME</a></span>
           <span class="type" lquery="(text type)">image/png</span>
           <time pubdate datetime="2014.11.29T99:99:99" title="Something Readable" lquery="(format-time time)">2014.11.29 13:30:00</time>
           <form class="action" action="/api/filebox/delete" method="post">
@@ -56,6 +56,9 @@ time:2014 type:png my-attribute-key:value" />
                    title="This will delete the file forever and after. No turning back." />
           </form>
           <div class="attrs" lquery="(text attrs)">ATTRIBUTES:AND SOME:SUCH</div>
+          <span class="preview">
+            <a href="#" lquery="(attr :href (filebox::file-link *))"></a>
+          </span>
         </li>
       </ul>
     </main>

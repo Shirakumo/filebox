@@ -123,6 +123,12 @@
      :border 1px solid black)
     (.file
      :padding-left 5px)
+    (.preview
+     :flex 1 100%
+     :display none
+     (img
+      :max-width 500px
+      :max-height 500px))
     (.attrs
      :transition opacity 0.3s ease-in-out
      :opacity 0
