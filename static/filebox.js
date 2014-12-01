@@ -112,6 +112,48 @@ $(function(){
         }
     }
 
+    function clickableAttributes(){
+        // Gather attributes, group together.
+        var attributes = {};
+        $("#files .attrs").each(function(){
+            var inner = $(this).text().split(" ");
+            $.each(inner, function(i, val){
+                if(val !== ""){
+                    if(attributes[val] == undefined){
+                        attributes[val] = 1;
+                    }else{
+                        attributes[val]++;
+                    }
+                }
+            });
+        });
+        // Sort by frequency.
+        var sorted = []
+        for(var attr in attributes){
+            sorted.push([attr, attributes[attr]]);
+        }
+        sorted.sort(function(a,b){return b[1]-a[1];});
+        // Generate elements
+        var list = document.createElement("ul");
+        $.each(sorted, function(i, val){
+            val = val[0];
+            var attr = document.createElement("li");
+            $(attr).text(val)
+                .appendTo(list)
+                .click(function(){
+                    var current = $("#upload .attrs").val();
+                    if(contains(current, val)){
+                        $("#upload .attrs").val(current.replace(new RegExp("\\s*"+val+"\\s*","g")," "));
+                    }else{
+                        $("#upload .attrs").val(current+" "+val);
+                    }
+                });
+        });
+        // Publish list
+        $(list).attr("class","interactive-attrs")
+            .appendTo("#upload");
+    }
+
     // allow filtering
     setupFilterableList($("#files"), $("#filter"));
 
@@ -129,4 +171,7 @@ $(function(){
     $("#files li").each(function(){
         maybeMakeClickable(this);
     });
+
+    // more convenient attributes
+    clickableAttributes();
 });
