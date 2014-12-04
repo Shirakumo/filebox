@@ -148,4 +148,4 @@
     (dm:delete file)
     (if (string= (post/get "browser") "true")
         (redirect (format NIL "/?notice=File%20deleted.") 303)
-        (api-output () :message "File deleted."))))
+        (api-output "File deleted."))))
