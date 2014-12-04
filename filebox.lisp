@@ -134,7 +134,7 @@
           (list :id (to-secure-id (dm:id model))
                 :url (format NIL "http://filebox.~a/file/~a"
                              (domain *request*) (to-secure-id (dm:id model)))
-                :title (dm:field model "name")
+                :name (dm:field model "name")
                 :type (dm:field model "type")
                 :attrs (cl-ppcre:split "\\s+" (dm:field model "attrs"))
                 :time (dm:field model "time")
