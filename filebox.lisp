@@ -132,9 +132,11 @@
         (api-output
          (alexandria:plist-hash-table
           (list :id (to-secure-id (dm:id model))
+                :url (format NIL "http://filebox.~a/file/~a"
+                             (domain *request*) (to-secure-id (dm:id model)))
                 :title (dm:field model "name")
                 :type (dm:field model "type")
-                :attrs (dm:field model "attrs")
+                :attrs (cl-ppcre:split "\\s+" (dm:field model "attrs"))
                 :time (dm:field model "time")
                 :author (dm:field model "author")))
          :message "File uploaded."))))
