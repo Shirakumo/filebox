@@ -129,7 +129,15 @@
        (first file) (file-pathname model)))
     (if (string= (post/get "browser") "true")
         (redirect (format NIL "/?upload=~a" (to-secure-id (dm:id model))) 303)
-        (api-output "File uploaded."))))
+        (api-output
+         (alexandria:plist-hash-table
+          (list :id (to-secure-id (dm:id model))
+                :title (dm:field model "name")
+                :type (dm:field model "type")
+                :attrs (dm:field model "attrs")
+                :time (dm:field model "time")
+                :author (dm:field model "author")))
+         :message "File uploaded."))))
 
 (define-api filebox/delete (file) (:access (perm filebox delete))
   (let ((file (ensure-file file)))
@@ -138,4 +146,4 @@
     (dm:delete file)
     (if (string= (post/get "browser") "true")
         (redirect (format NIL "/?notice=File%20deleted.") 303)
-        (api-output "File deleted."))))
+        (api-output () :message "File deleted."))))
