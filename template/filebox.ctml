@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>Filebox</title>
-    <link rel="stylesheet" type="text/css" href="/static/filebox/filebox.css" />
+    <link rel="stylesheet" type="text/css" @href="/static/filebox/filebox.css" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content="Simple file storage." />
     <meta name="robots" content="noindex, nofollow" />
@@ -21,7 +21,7 @@
       </c:when>
     </header>
     <main>      
-      <form id="upload" action="/api/filebox/upload" method="post" enctype="multipart/form-data">
+      <form id="upload" @action="/api/filebox/upload" method="post" enctype="multipart/form-data">
         <input type="hidden" name="browser" value="true" />
         <input type="file" class="file" name="file" tabindex="2" required
                title="For better or worse, you will have to pick a file if you want to upload something." />
@@ -49,7 +49,7 @@ time:2014 type:png my-attribute-key:value" />
           <span><a class="file" href="#" lquery="(text name) (attr :href (filebox::file-link *))">FILENAME</a></span>
           <span class="type" lquery="(text type)">image/png</span>
           <time pubdate datetime="2014.11.29T99:99:99" title="Something Readable" lquery="(format-time time)">2014.11.29 13:30:00</time>
-          <form class="action" action="/api/filebox/delete" method="post">
+          <form class="action" @action="/api/filebox/delete" method="post">
             <input type="hidden" name="browser" value="true" />
             <input type="hidden" name="file" lquery="(val (filebox::to-secure-id _id))" />
             <input type="submit" value="Delete" tabindex="-1"
@@ -72,6 +72,6 @@ time:2014 type:png my-attribute-key:value" />
       </footer>
     </footer>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="/static/filebox/filebox.js"></script>
+    <script type="text/javascript" @src="/static/filebox/filebox.js"></script>
   </body>
 </html>
