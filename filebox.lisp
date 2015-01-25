@@ -98,6 +98,7 @@
         (if (file-accessible-p file)
             (progn
               (setf (header "Cache-Control") "public, max-age=31536000")
+              (setf (header "Content-Disposition") (format NIL "inline; filename=\"~a\"" (dm:field file "name")))
               (serve-file (file-pathname file) (dm:field file "type")))
             (error "Not permitted.")))
     (error (err)
