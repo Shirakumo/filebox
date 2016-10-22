@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>Filebox</title>
-    <link rel="stylesheet" type="text/css" @href="/static/filebox/filebox.css" />
+    <link rel="stylesheet" type="text/css" @href="/static/filebox/filebox.css" href="../static/filebox.css" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content="Simple file storage." />
     <meta name="robots" content="noindex, nofollow" />
