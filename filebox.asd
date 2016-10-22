@@ -18,4 +18,5 @@ This file is a part of TyNETv5/Radiance
   :depends-on ((:interface :auth)
                (:interface :data-model)
                :r-clip
-               :trivial-mimes))
+               :trivial-mimes
+               :ubiquitous))

@@ -11,8 +11,8 @@
 (in-package #:filebox)
 
 (define-trigger radiance:startup-done ()
-  (unless (uc:config-tree :filebox :key)
-    (setf (uc:config-tree :filebox :key)
+  (unless (config :filebox :key)
+    (setf (config :filebox :key)
           (make-random-string))
     (radiance:save-config)))
 
@@ -43,13 +43,13 @@
   0)
 
 (defun hash-password (pass)
-  (cryptos:pbkdf2-hash pass (uc:config-tree :filebox :key)))
+  (cryptos:pbkdf2-hash pass (config :filebox :key)))
 
 (defun to-secure-id (id)
-  (cryptos:encrypt (write-to-string id) (uc:config-tree :filebox :key)))
+  (cryptos:encrypt (write-to-string id) (config :filebox :key)))
 
 (defun from-secure-id (id)
-  (parse-integer (cryptos:decrypt id (uc:config-tree :filebox :key))))
+  (parse-integer (cryptos:decrypt id (config :filebox :key))))
 
 (defun ensure-file (file)
   (etypecase file
