@@ -90,7 +90,7 @@
 
 (defun file-link (file)
   (let ((file (ensure-file file)))
-    (external-pattern "filebox/file/{0}" (to-secure-id (dm:id file)))))
+    (external-uri (format NIL "filebox/file/~a" (to-secure-id (dm:id file))))))
 
 (define-page file #@"filebox/file/(.+)" (:uri-groups (id))
   (handler-case
@@ -109,7 +109,8 @@
     (let ((files (dm:get 'filebox-files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)))))
       (r-clip:process
        T
-       :notice (cond ((get-var "upload") (format NIL "File <a href='~a' tabindex='-1'>uploaded</a>." (external-pattern "filebox/file/{0}" (get-var "upload"))))
+       :notice (cond ((get-var "upload") (format NIL "File <a href='~a' tabindex='-1'>uploaded</a>."
+                                                 (external-uri (format NIL "filebox/file/~a" (get-var "upload")))))
                      ((get-var "notice") (format NIL "Notice: ~a" (get-var "notice"))))
        :files files
        :available (format NIL "~,,'':d" (floor (/ (directory-free (user-directory username)) 1024)))
@@ -131,11 +132,11 @@
       (uiop:copy-file
        (first file) (file-pathname model)))
     (if (string= (post/get "browser") "true")
-        (redirect (external-pattern "filebox/?upload={0}" (to-secure-id (dm:id model))) 303)
+        (redirect (external-uri (format NIL "filebox/?upload=~a" (to-secure-id (dm:id model)))) 303)
         (api-output
          (alexandria:plist-hash-table
           (list :id (to-secure-id (dm:id model))
-                :url (external-pattern "filebox/file/{0}" (to-secure-id (dm:id model)))
+                :url (external-uri (format NIL "filebox/file/~a" (to-secure-id (dm:id model))))
                 :name (dm:field model "name")
                 :type (dm:field model "type")
                 :attrs (cl-ppcre:split "\\s+" (dm:field model "attrs"))
@@ -149,5 +150,5 @@
      (file-pathname file))
     (dm:delete file)
     (if (string= (post/get "browser") "true")
-        (redirect (external-pattern "filebox/?notice=File%20deleted.") 303)
+        (redirect (external-uri "filebox/?notice=File%20deleted.") 303)
         (api-output "File deleted."))))
