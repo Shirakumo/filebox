@@ -104,7 +104,7 @@
     (error (err)
       (error 'request-not-found :message (princ-to-string err)))))
 
-(define-page index "filebox/" (:access (perm filebox upload) :lquery (template "filebox.ctml"))
+(define-page index "filebox/" (:access (perm filebox upload) :lquery (@template "filebox.ctml"))
   (let ((username (user:username (auth:current))))
     (let ((files (dm:get 'filebox-files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)))))
       (r-clip:process
