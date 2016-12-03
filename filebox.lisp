@@ -13,8 +13,7 @@
 (define-trigger radiance:startup-done ()
   (unless (config :filebox :key)
     (setf (config :filebox :key)
-          (make-random-string))
-    (radiance:save-config)))
+          (make-random-string))))
 
 (define-trigger db:connected ()
   (db:create 'filebox-files '((name (:varchar 64))
