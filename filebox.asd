@@ -7,7 +7,7 @@ This file is a part of TyNETv5/Radiance
 (in-package #:cl-user)
 (asdf:defsystem #:filebox
   :defsystem-depends-on (:radiance)
-  :class "radiance:module"
+  :class "radiance:virtual-module"
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :license "Artistic"
