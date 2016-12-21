@@ -16,7 +16,7 @@ This file is a part of TyNETv5/Radiance
   :homepage "https://github.com/Shirakumo/filebox"
   :components ((:file "filebox"))
   :depends-on ((:interface :auth)
-               (:interface :data-model)
+               :r-data-model
                :r-clip
                :trivial-mimes
                :ubiquitous))
