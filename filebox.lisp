@@ -16,12 +16,12 @@
           (make-random-string))))
 
 (define-trigger db:connected ()
-  (db:create 'filebox-files '((name (:varchar 64))
-                              (type (:varchar 32))
-                              (hash (:varchar 128))
-                              (attrs :text)
-                              (time (:integer 5))
-                              (author (:varchar 32)))))
+  (db:create 'files '((name (:varchar 64))
+                      (type (:varchar 32))
+                      (hash (:varchar 128))
+                      (attrs :text)
+                      (time (:integer 5))
+                      (author (:varchar 32)))))
 
 (defun directory-size (pathname)
   #+:unix
@@ -48,14 +48,14 @@
   (cryptos:encrypt (write-to-string id) (config :key)))
 
 (defun from-secure-id (id)
-  (parse-integer (cryptos:decrypt id (config :key))))
+  (db:ensure-id (cryptos:decrypt id (config :key))))
 
 (defun ensure-file (file)
   (etypecase file
     (dm:data-model file)
-    (fixnum (or (dm:get-one 'filebox-files (db:query (:= '_id file)))
+    (db:id (or (dm:get-one 'files (db:query (:= '_id file)))
                 (error "No such file found.")))
-    (string (ensure-file (from-secure-id file)))))
+    (T (ensure-file (from-secure-id file)))))
 
 (defun file-filename (file)
   (let ((file (ensure-file file)))
@@ -106,7 +106,7 @@
 
 (define-page index "filebox/" (:access (perm filebox upload) :clip (@template "filebox.ctml"))
   (let ((username (user:username (auth:current))))
-    (let ((files (dm:get 'filebox-files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)))))
+    (let ((files (dm:get 'files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)))))
       (r-clip:process
        T
        :notice (cond ((get-var "upload") (format NIL "File <a href='~a' tabindex='-1'>uploaded</a>."
@@ -120,7 +120,7 @@
   (let ((name (or* name (second file)))
         (type (mimes:mime-lookup (second file)))
         (password (or* password))
-        (model (dm:hull 'filebox-files)))
+        (model (dm:hull 'files)))
     (db:with-transaction ()
       (setf (dm:field model "name") (if (< 64 (length name)) (subseq name 0 64) name)
             (dm:field model "type") type
