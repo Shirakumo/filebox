@@ -10,9 +10,9 @@
 
 (in-package #:filebox)
 
-(define-trigger radiance:startup-done ()
-  (unless (config :filebox :key)
-    (setf (config :filebox :key)
+(define-trigger radiance:startup ()
+  (unless (config :key)
+    (setf (config :key)
           (make-random-string))))
 
 (define-trigger db:connected ()
@@ -42,13 +42,13 @@
   0)
 
 (defun hash-password (pass)
-  (cryptos:pbkdf2-hash pass (config :filebox :key)))
+  (cryptos:pbkdf2-hash pass (config :key)))
 
 (defun to-secure-id (id)
-  (cryptos:encrypt (write-to-string id) (config :filebox :key)))
+  (cryptos:encrypt (write-to-string id) (config :key)))
 
 (defun from-secure-id (id)
-  (parse-integer (cryptos:decrypt id (config :filebox :key))))
+  (parse-integer (cryptos:decrypt id (config :key))))
 
 (defun ensure-file (file)
   (etypecase file
@@ -89,7 +89,8 @@
 
 (defun file-link (file)
   (let ((file (ensure-file file)))
-    (external-uri (format NIL "filebox/file/~a" (to-secure-id (dm:id file))))))
+    (make-url :domains '("filebox")
+              :path (format NIL "/file/~a" (to-secure-id (dm:id file))))))
 
 (define-page file "filebox/file/(.+)" (:uri-groups (id))
   (handler-case
@@ -109,7 +110,7 @@
       (r-clip:process
        T
        :notice (cond ((get-var "upload") (format NIL "File <a href='~a' tabindex='-1'>uploaded</a>."
-                                                 (external-uri (format NIL "filebox/file/~a" (get-var "upload")))))
+                                                 (make-url :domains '("filebox") :path (format NIL "/file/~a" (get-var "upload")))))
                      ((get-var "notice") (format NIL "Notice: ~a" (get-var "notice"))))
        :files files
        :available (format NIL "~,,'':d" (floor (/ (directory-free (user-directory username)) 1024)))
@@ -131,11 +132,11 @@
       (uiop:copy-file
        (first file) (file-pathname model)))
     (if (string= (post/get "browser") "true")
-        (redirect (external-uri (format NIL "filebox/?upload=~a" (to-secure-id (dm:id model)))) 303)
+        (redirect (make-url :domains '("filebox") :query `(("upload" . ,(to-secure-id (dm:id model))))) :as-is 303)
         (api-output
          (alexandria:plist-hash-table
           (list :id (to-secure-id (dm:id model))
-                :url (external-uri (format NIL "filebox/file/~a" (to-secure-id (dm:id model))))
+                :url (file-link model)
                 :name (dm:field model "name")
                 :type (dm:field model "type")
                 :attrs (cl-ppcre:split "\\s+" (dm:field model "attrs"))
@@ -149,5 +150,5 @@
      (file-pathname file))
     (dm:delete file)
     (if (string= (post/get "browser") "true")
-        (redirect (external-uri "filebox/?notice=File%20deleted.") 303)
+        (redirect (make-url :domains '("filebox") :query '(("notice" . "File deleted"))) :as-is 303)
         (api-output "File deleted."))))
