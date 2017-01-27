@@ -64,8 +64,10 @@
 
 (defun user-directory (user)
   (ensure-directories-exist
-   (asdf:system-relative-pathname
-    :filebox (format NIL "uploads/~a/" user))))
+   (make-pathname :name NIL
+                  :type NIL
+                  :defaults (merge-pathnames (format NIL "uploads/~a/" user)
+                                             (mconfig-pathname #.*package*)))))
 
 (defun file-directory (file)
   (user-directory (dm:field (ensure-file file) "author")))
