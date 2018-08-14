@@ -11,7 +11,7 @@ This file is a part of TyNETv5/Radiance
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :license "Artistic"
-  :version "1.0.1"
+  :version "1.2.0"
   :description "Simple file storage for Radiance"
   :homepage "https://github.com/Shirakumo/filebox"
   :components ((:file "filebox"))

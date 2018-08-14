@@ -64,10 +64,8 @@
 
 (defun user-directory (user)
   (ensure-directories-exist
-   (make-pathname :name NIL
-                  :type NIL
-                  :defaults (merge-pathnames (format NIL "uploads/~a/" user)
-                                             (mconfig-pathname #.*package*)))))
+   (environment-module-pathname
+    #.*package* :data (make-pathname :directory (list :relative (princ-to-string user))))))
 
 (defun file-directory (file)
   (user-directory (dm:field (ensure-file file) "author")))
@@ -154,3 +152,13 @@
     (if (string= (post/get "browser") "true")
         (redirect (make-url :domains '("filebox") :query '(("notice" . "File deleted"))) :as-is 303)
         (api-output "File deleted."))))
+
+(define-version-migration filebox (NIL 1.2.0)
+  (let ((old (make-pathname :name NIL
+                            :type NIL
+                            :defaults (merge-pathnames "uploads/"
+                                                       (mconfig-pathname #.*package*))))
+        (new (environment-module-directory #.*package* :data)))
+    (when (uiop:directory-exists-p old)
+      (uiop:delete-directory-tree new :validate (constantly T))
+      (rename-file old new))))
