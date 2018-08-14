@@ -160,5 +160,6 @@
                                                        (mconfig-pathname #.*package*))))
         (new (environment-module-directory #.*package* :data)))
     (when (uiop:directory-exists-p old)
-      (uiop:delete-directory-tree new :validate (constantly T))
+      (when (uiop:directory-exists-p new)
+        (uiop:delete-directory-tree new :validate (constantly T)))
       (rename-file old new))))
