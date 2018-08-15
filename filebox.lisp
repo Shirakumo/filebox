@@ -92,7 +92,7 @@
     (make-url :domains '("filebox")
               :path (format NIL "/file/~a" (to-secure-id (dm:id file))))))
 
-(define-page file "filebox/file/(.+)" (:uri-groups (id))
+(define-page file-payload "filebox/file/(.+)" (:uri-groups (id))
   (handler-case
       (let* ((file (ensure-file id)))
         (if (file-accessible-p file)
