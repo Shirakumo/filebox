@@ -13,7 +13,9 @@ This file is a part of TyNETv5/Radiance
   :license "Artistic"
   :version "1.2.0"
   :description "Simple file storage for Radiance"
-  :homepage "https://github.com/Shirakumo/filebox"
+  :homepage "https://Shirakumo.github.io/filebox/"
+  :bug-tracker "https://github.com/Shirakumo/filebox/issues"
+  :source-control (:git "https://github.com/Shirakumo/filebox.git")
   :components ((:file "filebox"))
   :depends-on ((:interface :auth)
                :r-data-model
