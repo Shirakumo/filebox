@@ -128,7 +128,7 @@ $(function(){
             });
         });
         // Sort by frequency.
-        var sorted = []
+        var sorted = [];
         for(var attr in attributes){
             sorted.push([attr, attributes[attr]]);
         }
@@ -155,6 +155,25 @@ $(function(){
             .appendTo("#upload");
     }
 
+    function copyToClipboard(content){
+        navigator.clipboard.writeText(content).then(function(){
+            var notice = document.querySelector("#notice");
+            if(!notice){
+                notice = document.createElement("div");
+                notice.setAttribute("id","notice");
+                document.querySelector("body>header").appendChild(notice);
+            }
+            notice.innerText = "URL Copied to clipboard.";
+        }, function(){
+            console.log("Failed to copy", content, "to clipboard");
+        });
+    }
+
+    // Check if we have an upload notice and copy.
+    if(document.querySelector("#notice a")){
+        copyToClipboard(document.querySelector("#notice a").getAttribute("href"));
+    }
+    
     // allow filtering
     setupFilterableList($("#files"), $("#filter"));
 
