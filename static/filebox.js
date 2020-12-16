@@ -169,6 +169,33 @@ $(function(){
         });
     }
 
+    // Root
+    var apiRoot = document.querySelector("head link[rel=api-root]").getAttribute("href");
+    var start = document.querySelectorAll("#files li").length;
+    document.querySelector("#load").addEventListener("click", function(){
+        $.getJSON(apiRoot+"list", {start: start+"", "data-format":"json"}, function(data){
+            if(data.data == null){
+                document.querySelector("#load").remove();
+            }else{
+                for(var i=0; i<data.data.length; ++i){
+                    var dat = data.data[i];
+                    var base = document.querySelector("#files li").cloneNode(true);
+                    base.querySelector(".file").setAttribute("href", dat.url);
+                    base.querySelector(".file").innerText = dat.name;
+                    base.querySelector(".type").innerText = dat.type;
+                    base.querySelector("time").innerText = formatDate(new Date(dat.time*1000));
+                    base.querySelector(".action [name=file]").innerText = dat.id;
+                    base.querySelector(".action [name=file]").setAttribute("title","");
+                    base.querySelector(".attrs").innerText = dat.attrs;
+                    base.querySelector(".preview a").setAttribute("href", dat.url);
+                    document.querySelector("#files").appendChild(base);
+                    maybeMakeClickable(base);
+                    start++;
+                }
+            }
+        });
+    });
+
     // Check if we have an upload notice and copy.
     if(document.querySelector("#notice a")){
         copyToClipboard(document.querySelector("#notice a").getAttribute("href"));
@@ -179,13 +206,6 @@ $(function(){
 
     // upload dummy timestamp
     $("#upload time").text(formatDate(new Date()));
-
-    // remove empty attrs
-    $("#files li .attrs").each(function(){
-        if($(this).text().trim()===""){
-            $(this).remove();
-        }
-    });
 
     // previews
     $("#files li").each(function(){

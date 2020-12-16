@@ -20,5 +20,6 @@ This file is a part of TyNETv5/Radiance
   :depends-on ((:interface :auth)
                :r-data-model
                :r-clip
+               :i-json
                :trivial-mimes
                :ubiquitous))

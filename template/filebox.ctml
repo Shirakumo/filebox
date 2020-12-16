@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content="Simple file storage." />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="api-root" @href="filebox/api/filebox/"/>
   </head>
   <body>
     <header>
@@ -61,6 +62,7 @@ time:2014 type:png my-attribute-key:value" />
           </span>
         </li>
       </ul>
+      <button id="load">Load more</button>
     </main>
     <footer>
       <footer>

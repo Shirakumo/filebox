@@ -92,6 +92,16 @@
     (make-url :domains '("filebox")
               :path (format NIL "/file/~a" (to-secure-id (dm:id file))))))
 
+(defun file-data (file)
+  (alexandria:plist-hash-table
+   (list :id (to-secure-id (dm:id file))
+         :url (file-link file)
+         :name (dm:field file "name")
+         :type (dm:field file "type")
+         :attrs (cl-ppcre:split "\\s+" (dm:field file "attrs"))
+         :time (dm:field file "time")
+         :author (dm:field file "author"))))
+
 (define-page file-payload "filebox/file/(.+)" (:uri-groups (id))
   (handler-case
       (let* ((file (ensure-file id)))
@@ -106,7 +116,7 @@
 
 (define-page index "filebox/" (:access (perm filebox upload) :clip "filebox.ctml")
   (let ((username (user:username (auth:current))))
-    (let ((files (dm:get 'files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)))))
+    (let ((files (dm:get 'files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)) :amount 50)))
       (r-clip:process
        T
        :notice (cond ((get-var "upload") (format NIL "File <a href='~a' tabindex='-1'>uploaded</a>."
@@ -134,14 +144,7 @@
     (if (string= (post/get "browser") "true")
         (redirect (make-url :domains '("filebox") :query `(("upload" . ,(to-secure-id (dm:id model))))) :as-is 303)
         (api-output
-         (alexandria:plist-hash-table
-          (list :id (to-secure-id (dm:id model))
-                :url (file-link model)
-                :name (dm:field model "name")
-                :type (dm:field model "type")
-                :attrs (cl-ppcre:split "\\s+" (dm:field model "attrs"))
-                :time (dm:field model "time")
-                :author (dm:field model "author")))
+         (file-data model)
          :message "File uploaded."))))
 
 (define-api filebox/delete (file) (:access (perm filebox delete))
@@ -152,6 +155,12 @@
     (if (string= (post/get "browser") "true")
         (redirect (make-url :domains '("filebox") :query '(("notice" . "File deleted"))) :as-is 303)
         (api-output "File deleted."))))
+
+(define-api filebox/list (&optional amount start) (:access (perm filebox upload)) 
+  (api-output (mapcar #'file-data (dm:get 'files (db:query (:= 'author (user:username (auth:current))))
+                                          :sort '((time :DESC) (name :ASC))
+                                          :amount (min 50 (parse-integer (or* amount "50")))
+                                          :skip (parse-integer (or* start "0"))))))
 
 (define-version-migration filebox (NIL 1.2.0)
   (let ((old (make-pathname :name NIL
