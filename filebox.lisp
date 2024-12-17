@@ -39,10 +39,23 @@
   (cryptos:pbkdf2-hash pass (config :key)))
 
 (defun to-secure-id (id)
-  (cryptos:encrypt (write-to-string id) (config :key)))
+  ;; Multiply by prime to make the offsets less predictable
+  ;; And add a tiny hash to the base.
+  (let* ((id (* id 2521 (expt 36 4)))
+         (hash (logand (sxhash id) (1- (expt 36 4)))))
+    (write-to-string (+ id hash) :base 36)))
 
 (defun from-secure-id (id)
-  (db:ensure-id (cryptos:decrypt id (config :key))))
+  (db:ensure-id (truncate (parse-integer id :radix 36) (* 2521 (expt 36 4)))))
+
+(defun ensure-b64 (thing)
+  (case (mod (length thing) 4)
+    (0 thing)
+    ((1 3) (format NIL "~a=" thing))
+    (2 (format NIL "~a==" thing))))
+
+(defun from-secure-id-old (id)
+  (db:ensure-id (cryptos:decrypt (ensure-b64 id) (config :key))))
 
 (defun ensure-file (file)
   (etypecase file
@@ -84,7 +97,7 @@
 (defun file-link (file)
   (let ((file (ensure-file file)))
     (make-url :domains '("filebox")
-              :path (format NIL "/file/~a" (to-secure-id (dm:id file))))))
+              :path (format NIL "~a" (to-secure-id (dm:id file))))))
 
 (defun file-data (file)
   (alexandria:plist-hash-table
@@ -96,20 +109,28 @@
          :time (dm:field file "time")
          :author (dm:field file "author"))))
 
+(defun deliver-file (file)
+  (if (file-accessible-p file)
+      (progn
+        (setf (header "Cache-Control") "public, max-age=31536000")
+        (setf (header "Content-Disposition") (format NIL "inline; filename=\"~a\"" (dm:field file "name")))
+        (setf (header "Access-Control-Allow-Origin") "*")
+        (serve-file (file-pathname file) (dm:field file "type")))
+      (error "Not permitted.")))
+
 (define-page file-payload "filebox/file/(.+)" (:uri-groups (id))
   (handler-case
-      (let* ((file (ensure-file id)))
-        (if (file-accessible-p file)
-            (progn
-              (setf (header "Cache-Control") "public, max-age=31536000")
-              (setf (header "Content-Disposition") (format NIL "inline; filename=\"~a\"" (dm:field file "name")))
-              (setf (header "Access-Control-Allow-Origin") "*")
-              (serve-file (file-pathname file) (dm:field file "type")))
-            (error "Not permitted.")))
+      (deliver-file (ensure-file (from-secure-id-old id)))
     (error (err)
       (error 'request-not-found :message (princ-to-string err)))))
 
-(define-page index "filebox/" (:access (perm filebox upload) :clip "filebox.ctml")
+(define-page file-payload-new "filebox/(.+)" (:uri-groups (id))
+  (handler-case
+      (deliver-file (ensure-file id))
+    (error (err)
+      (error 'request-not-found :message (princ-to-string err)))))
+
+(define-page index "filebox/^$" (:access (perm filebox upload) :clip "filebox.ctml")
   (let ((username (user:username (auth:current))))
     (let ((files (dm:get 'files (db:query (:= 'author username)) :sort '((time :DESC) (name :ASC)) :amount 50)))
       (r-clip:process
