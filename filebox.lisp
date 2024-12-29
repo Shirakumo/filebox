@@ -136,7 +136,7 @@
       (r-clip:process
        T
        :notice (cond ((get-var "upload") (format NIL "File <a href='~a' tabindex='-1'>uploaded</a>."
-                                                 (make-url :domains '("filebox") :path (format NIL "/file/~a" (get-var "upload")))))
+                                                 (make-url :domains '("filebox") :path (get-var "upload"))))
                      ((get-var "notice") (format NIL "Notice: ~a" (get-var "notice"))))
        :files files
        :available (format NIL "~,,'':d" (floor (/ (directory-free (user-directory username)) 1024)))
