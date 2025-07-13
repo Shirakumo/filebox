@@ -158,7 +158,7 @@
       (uiop:copy-file
        (first file) (file-pathname model)))
     (if (string= (post/get "browser") "true")
-        (redirect (make-url :domains '("filebox") :query `(("upload" . ,(to-secure-id (dm:id model))))) :as-is 303)
+        (api-redirect (make-url :domains '("filebox") :query `(("upload" . ,(to-secure-id (dm:id model))))))
         (api-output
          (file-data model)
          :message "File uploaded."))))
@@ -169,7 +169,7 @@
      (file-pathname file))
     (dm:delete file)
     (if (string= (post/get "browser") "true")
-        (redirect (make-url :domains '("filebox") :query '(("notice" . "File deleted"))) :as-is 303)
+        (api-redirect (make-url :domains '("filebox") :query '(("notice" . "File deleted"))))
         (api-output "File deleted."))))
 
 (define-api filebox/list (&optional amount start) (:access (perm filebox upload)) 
