@@ -6,9 +6,9 @@
   :license "zlib"
   :version "1.2.0"
   :description "Simple file storage for Radiance"
-  :homepage "https://Shirakumo.github.io/filebox/"
-  :bug-tracker "https://github.com/Shirakumo/filebox/issues"
-  :source-control (:git "https://github.com/Shirakumo/filebox.git")
+  :homepage "https://shirakumo.org/docs/filebox/"
+  :bug-tracker "https://shirakumo.org/project/filebox/issues"
+  :source-control (:git "https://shirakumo.org/project/filebox.git")
   :components ((:file "filebox"))
   :depends-on ((:interface :auth)
                :r-data-model

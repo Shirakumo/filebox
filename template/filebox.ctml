@@ -67,9 +67,9 @@ time:2014 type:png my-attribute-key:value" />
     <footer>
       <footer>
         Running TyNETv5
-        <a href="https://github.com/Shirakumo/radiance" tabindex="-1"
+        <a href="https://shirakumo.org/project/radiance" tabindex="-1"
            title="Radiance is a web-framework written in Common Lisp.">Radiance</a>,
-        <a href="https://github.com/Shirakumo/filebox" tabindex="-1"
+        <a href="https://shirakumo.org/project/filebox" tabindex="-1"
            title="A tiny application written on top of radiance to bring you simple file uploading.">Filebox</a>.
       </footer>
     </footer>
