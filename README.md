@@ -1,22 +1,4 @@
-About Filebox
--------------
-This is a simplistic file storage application for Radiance. It allows users to upload arbitrary files to a personal storage and share direct links to the files with others. Files can be tagged with attributes and filtered by them in the UI to allow quick searching.
+# This repository has [moved](https://shirakumo.org/projects/filebox)!
+Due to Microsoft's continued enshittification of the platform this repository has been moved to [Codeberg](https://shirakumo.org/projects/filebox) in August of 2025. It will not receive further updates or patches. **Issues and pull requests will not be looked at here either**, please submit your patches and issue tickets on Codeberg, or send them directly via good old email patches to [shirakumo@tymoon.eu](mailto:shirakumo@tymoon.eu).
 
-Module Description
-------------------
-    Module FILEBOX
-    
-    Domain: filebox
-    Implements: Nothing
-    Configuration: None
-    Permissions: filebox.delete, filebox.upload
-    
-    System: filebox
-    Required interfaces: AUTH, DATA-MODEL
-    Required systems: r-clip, trivial-mimes
-    Author: Nicolas Hafner <shinmera@tymoon.eu>
-    Description: Simple file storage for Radiance
-
-Screenshot of the Default Layout
---------------------------------
-![screenshot](http://shinmera.tymoon.eu/public/screenshot-2014.11.29-16:21:45.png)
+Thanks.
